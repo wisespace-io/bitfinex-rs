@@ -1,0 +1,28 @@
+[package]
+name = "bitfinex"
+version = "0.1.0"
+license = "MIT OR Apache-2.0"
+authors = ["Flavio Oliveira <flavio@wisespace.io>"]
+
+description = "Rust Library for the Bitfinex API"
+keywords = ["cryptocurrency", "trading"]
+repository = "https://github.com/wisespace-io/bitfinex-rs"
+readme = "README.md"
+
+[badges]
+travis-ci = { repository = "wisespace-io/bitfinex-rs" }
+
+[lib]
+name = "bitfinex"
+path = "src/lib.rs"
+
+[dependencies]
+hex = "0.2"
+serde = "^1.0"
+serde_json = "^1.0"
+serde_derive = "^1.0"
+error-chain = "^0.11"
+ring = "^0.12"
+reqwest = "^0.8"
+tungstenite = "^0.5"
+url = "^1.6"
