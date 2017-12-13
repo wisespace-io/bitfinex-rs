@@ -1,0 +1,7 @@
+[package]
+name = "bitfinex-app"
+version = "0.1.0"
+authors = ["Flavio Oliveira <flavio@wisespace.io>"]
+
+[dependencies]
+bitfinex = { path = "../" }
