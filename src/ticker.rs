@@ -20,8 +20,8 @@ pub struct TradingPair {
 pub struct FundingCurrency { 
     pub frr: f64,
     pub bid: f64,
-    pub bid_size: f64,   
     pub bid_period: i64,
+    pub bid_size: f64,   
     pub ask: f64,      
     pub ask_period: i64,              
     pub ask_size: f64,
@@ -46,7 +46,8 @@ impl Ticker {
     }
 
     pub fn funding_currency(&self, symbol: String) -> Result<(FundingCurrency)> {
-        let data = self.client.get("ticker/f", symbol)?;
+        let endpoint: String = format!("ticker/f{}", symbol);
+        let data = self.client.get(endpoint, String::new())?;
 
         let ticker: FundingCurrency = from_str(data.as_str()).unwrap();
 
@@ -54,7 +55,8 @@ impl Ticker {
     }    
 
     pub fn trading_pair(&self, symbol: String) -> Result<(TradingPair)> {
-        let data = self.client.get("ticker/t", symbol)?;
+        let endpoint: String = format!("ticker/t{}", symbol);
+        let data = self.client.get(endpoint, String::new())?;
 
         let ticker: TradingPair = from_str(data.as_str()).unwrap();
 

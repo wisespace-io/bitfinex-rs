@@ -22,106 +22,16 @@ impl Client {
         }
     }
 
-    pub fn get_signed(&self, endpoint: &str, request: String) -> Result<(String)> {
-        let url = self.sign_request(endpoint, request);
-        let client = reqwest::Client::new();
-        let response = client.get(url.as_str())
-            .headers(self.build_headers(true))
-            .send()?;
-
-        self.handler(response)            
-    }    
-
-    pub fn post_signed(&self, endpoint: &str, request: String) -> Result<(String)> {
-        let url = self.sign_request(endpoint, request);
-        let client = reqwest::Client::new();
-        let response = client.post(url.as_str())
-            .headers(self.build_headers(true))
-            .send()?;
-
-        self.handler(response)            
-    } 
-
-    pub fn delete_signed(&self, endpoint: &str, request: String) -> Result<(String)> {
-        let url = self.sign_request(endpoint, request);
-        let client = reqwest::Client::new();
-        let response = client.delete(url.as_str())
-            .headers(self.build_headers(true))
-            .send()?;
-
-        self.handler(response)            
-    }  
-
-    pub fn get(&self, endpoint: &str, request: String) -> Result<(String)> {
+    pub fn get(&self, endpoint: String, request: String) -> Result<(String)> {
         let mut url: String = format!("{}{}", API1_HOST, endpoint);
         if !request.is_empty() {
-            url.push_str(format!("{}", request).as_str());
+            url.push_str(format!("?{}", request).as_str());
         }
  
         let response = reqwest::get(url.as_str())?;
 
         self.handler(response)
     }
-
-    pub fn post(&self, endpoint: &str) -> Result<(String)> {
-        let url: String = format!("{}{}", API1_HOST, endpoint);
-
-        let client = reqwest::Client::new();
-        let response = client.post(url.as_str())
-            .headers(self.build_headers(false))
-            .send()?;
-
-        self.handler(response)
-    }
-
-    pub fn put(&self, endpoint: &str, listen_key: String) -> Result<(String)> {
-        let url: String = format!("{}{}", API1_HOST, endpoint);
-        let data: String = format!("listenKey={}", listen_key);
-
-        let client = reqwest::Client::new();
-        let response = client.put(url.as_str())
-            .headers(self.build_headers(false))
-            .body(data)
-            .send()?;
-
-        self.handler(response)
-    }
-
-    pub fn delete(&self, endpoint: &str, listen_key: String) -> Result<(String)> {
-        let url: String = format!("{}{}", API1_HOST, endpoint);
-        let data: String = format!("listenKey={}", listen_key);
-
-        let client = reqwest::Client::new();
-        let response = client.delete(url.as_str())
-            .headers(self.build_headers(false))
-            .body(data)
-            .send()?;
-
-        self.handler(response)
-    }
-
-    // Request must be signed
-    fn sign_request(&self, endpoint: &str, request: String) -> String {
-        let signed_key = hmac::SigningKey::new(&digest::SHA256, self.secret_key.as_bytes());
-        let signature = hmac::sign(&signed_key, request.as_bytes()).as_ref().to_hex().to_string();
-
-        let request_body: String = format!("{}&signature={}", request, signature); 
-        let url: String = format!("{}{}?{}", API1_HOST, endpoint, request_body);
-
-        url
-    }
-
-    fn build_headers(&self, content_type: bool) -> Headers {
-        let mut custon_headers = Headers::new();
-        
-        custon_headers.set(UserAgent::new("bitfinex-rs"));
-        if content_type {
-            custon_headers.set(ContentType::form_url_encoded());
-        }
-        custon_headers.set_raw("X-MBX-APIKEY", self.api_key.as_str());
-
-        custon_headers
-    } 
 
     fn handler(&self, mut response: Response) -> Result<(String)> {
         match response.status() {

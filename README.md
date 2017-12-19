@@ -3,7 +3,7 @@
 [![Apache-2.0 licensed](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE-APACHE)
 
 # bitfinex-rs
-Unofficial Rust Library for the [Bitfinex API](https://bitfinex.readme.io/v2/docs/getting-started)
+Unofficial Rust Library for the [Bitfinex API V2](https://bitfinex.readme.io/v2/docs/getting-started)
 
 # Risk Warning
 It is a personal project, use at your own risk. I will not be responsible for your investment losses.

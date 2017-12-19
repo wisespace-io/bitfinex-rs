@@ -16,6 +16,7 @@ extern crate serde_derive;
 mod errors;
 mod client;
 mod ticker;
+mod trades;
 
 pub mod api;
 pub mod pairs;
