@@ -4,8 +4,8 @@ use reqwest;
 use reqwest::{StatusCode, Response};
 use reqwest::header::{Headers, UserAgent, ContentType};
 use std::io::Read;
-use rand::{OsRng, Rng};
 use ring::{digest, hmac};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 static API1_HOST : &'static str = "https://api.bitfinex.com/v2/";
 static API_SIGNATURE_PATH : &'static str = "/api/v2/auth/r/";
@@ -36,22 +36,24 @@ impl Client {
     }
 
     pub fn post_signed(&self, endpoint: String, request: String) -> Result<(String)> {
+        let data: String = format!("{}", "{}"); //TODO: Must build the data
         let url: String = format!("{}{}", API1_HOST, endpoint);
 
         let client = reqwest::Client::new();
         let response = client.post(url.as_str())
-            .headers(self.build_headers(request))
+            .headers(self.build_headers(request, data.clone()))
+            .body(data)
             .send()?;
 
         self.handler(response)            
     } 
 
-    fn build_headers(&self, request: String) -> Headers {
+    fn build_headers(&self, request: String, data: String) -> Headers {
         let nonce: String = self.generate_nonce();
-        let signature_path: String = format!("{}{}{}{}", API_SIGNATURE_PATH, request, nonce, "{}");
+        let signature_path: String = format!("{}{}{}{}", API_SIGNATURE_PATH, request, nonce, data);
 
         let signed_key = hmac::SigningKey::new(&digest::SHA384, self.secret_key.as_bytes());
-        let signature = hmac::sign(&signed_key, signature_path.as_bytes()).as_ref().to_hex().to_string();        
+        let signature = hmac::sign(&signed_key, signature_path.as_bytes()).as_ref().to_hex().to_string();
 
         let mut custon_headers = Headers::new();  
         custon_headers.set(UserAgent::new("bitfinex-rs"));
@@ -64,10 +66,12 @@ impl Client {
     } 
 
     fn generate_nonce(&self) -> String {
-        OsRng::new().unwrap()
-                    .gen_ascii_chars()
-                    .take(40)
-                    .collect()
+        let start = SystemTime::now();
+        let since_epoch = start.duration_since(UNIX_EPOCH).unwrap();
+    
+        let timestamp = since_epoch.as_secs() * 1000 + since_epoch.subsec_nanos() as u64 / 1_000_000;
+
+        (timestamp + 1).to_string()      
     }
 
     fn handler(&self, mut response: Response) -> Result<(String)> {

@@ -1,3 +1,4 @@
+[![Crates.io](https://img.shields.io/crates/v/bitfinex.svg)](https://crates.io/crates/bitfinex)
 [![Build Status](https://travis-ci.org/wisespace-io/bitfinex-rs.png?branch=master)](https://travis-ci.org/wisespace-io/bitfinex-rs)
 [![MIT licensed](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE-MIT)
 [![Apache-2.0 licensed](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE-APACHE)

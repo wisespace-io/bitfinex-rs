@@ -7,7 +7,10 @@ use bitfinex::precision::*;
 
 fn main() {
     public_endpoints();
-    //private_endpoints(); --> It is Under development
+    
+    println!("=>> Private Endpoints: ");
+
+    private_endpoints();
 }
 
 fn public_endpoints() {
@@ -87,10 +90,12 @@ fn public_endpoints() {
 }
 
 fn private_endpoints() {
-    let api = Bitfinex::new(None, None);
+    let api_key = Some("YOUR_API_KEY".into());
+    let secret_key = Some("YOUR_SECRET_KEY".into());
+    let api = Bitfinex::new(api_key, secret_key);
   
     // ORDERS
-    let active_orders = api.orders.active_orders(IOTUSD.to_owned());
+    let active_orders = api.orders.active_orders();
     match active_orders {
         Ok(orders) => {
             for order in &orders {
