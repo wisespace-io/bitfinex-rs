@@ -45,8 +45,10 @@ impl Ticker {
         }
     }
 
-    pub fn funding_currency(&self, symbol: String) -> Result<(FundingCurrency)> {
-        let endpoint: String = format!("ticker/f{}", symbol);
+    pub fn funding_currency<S>(&self, symbol: S) -> Result<(FundingCurrency)>
+        where S: Into<String>
+    {     
+        let endpoint: String = format!("ticker/f{}", symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
         let ticker: FundingCurrency = from_str(data.as_str()).unwrap();
@@ -54,8 +56,10 @@ impl Ticker {
         Ok(ticker)
     }    
 
-    pub fn trading_pair(&self, symbol: String) -> Result<(TradingPair)> {
-        let endpoint: String = format!("ticker/t{}", symbol);
+    pub fn trading_pair<S>(&self, symbol: S) -> Result<(TradingPair)>
+        where S: Into<String>
+    {     
+        let endpoint: String = format!("ticker/t{}", symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
         let ticker: TradingPair = from_str(data.as_str()).unwrap();

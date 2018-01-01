@@ -31,8 +31,10 @@ impl Trades {
         }
     }
 
-    pub fn funding_currency(&self, symbol: String) -> Result<(Vec<FundingCurrency>)> {
-        let endpoint: String = format!("trades/f{}/hist",symbol);
+    pub fn funding_currency<S>(&self, symbol: S) -> Result<(Vec<FundingCurrency>)>
+        where S: Into<String>
+    {     
+        let endpoint: String = format!("trades/f{}/hist", symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
         let trades: Vec<FundingCurrency> = from_str(data.as_str()).unwrap();
@@ -40,8 +42,10 @@ impl Trades {
         Ok(trades)
     }    
 
-    pub fn trading_pair(&self, symbol: String) -> Result<(Vec<TradingPair>)> {
-        let endpoint: String = format!("trades/t{}/hist",symbol);
+    pub fn trading_pair<S>(&self, symbol: S) -> Result<(Vec<TradingPair>)>
+        where S: Into<String>
+    {     
+        let endpoint: String = format!("trades/t{}/hist", symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
         let trades: Vec<TradingPair> = from_str(data.as_str()).unwrap();

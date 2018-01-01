@@ -24,8 +24,10 @@ impl Candles {
         }
     }
 
-    pub fn last(&self, symbol: String, timeframe: String) -> Result<(Candle)> {
-        let endpoint: String = format!("candles/trade:{}:t{}/last", timeframe, symbol);
+    pub fn last<S>(&self, symbol: S, timeframe: S) -> Result<(Candle)>
+        where S: Into<String>
+    {    
+        let endpoint: String = format!("candles/trade:{}:t{}/last", timeframe.into(), symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
         let history: Candle = from_str(data.as_str()).unwrap();
@@ -33,8 +35,10 @@ impl Candles {
         Ok(history)
     }    
 
-    pub fn history(&self, symbol: String, timeframe: String) -> Result<(Vec<Candle>)> {
-        let endpoint: String = format!("candles/trade:{}:t{}/hist", timeframe, symbol);
+    pub fn history<S>(&self, symbol: S, timeframe: S) -> Result<(Vec<Candle>)>
+        where S: Into<String>
+    {    
+        let endpoint: String = format!("candles/trade:{}:t{}/hist", timeframe.into(), symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
         let history: Vec<Candle> = from_str(data.as_str()).unwrap();

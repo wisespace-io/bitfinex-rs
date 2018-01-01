@@ -17,20 +17,20 @@ fn public_endpoints() {
     let api = Bitfinex::new(None, None);
   
     // TICKER
-    let trading_pair = api.ticker.trading_pair(ETHUSD.to_owned());
+    let trading_pair = api.ticker.trading_pair(ETHUSD);
     match trading_pair {
         Ok(answer) => println!("bid: {:?}  ask: {:?}", answer.bid, answer.ask),
         Err(e) => println!("Error: {}", e),
     }   
 
-    let funding_currency = api.ticker.funding_currency(USD.to_owned());
+    let funding_currency = api.ticker.funding_currency(USD);
     match funding_currency {
         Ok(answer) => println!("bid: {:?}  ask: {:?}", answer.bid, answer.ask),
         Err(e) => println!("Error: {}", e),
     }
 
     // TRADES
-    let trading_pairs = api.trades.trading_pair(ETHUSD.to_owned());
+    let trading_pairs = api.trades.trading_pair(ETHUSD);
     match trading_pairs {
         Ok(trades) => {
             for trade in &trades {
@@ -40,7 +40,7 @@ fn public_endpoints() {
         Err(e) => println!("Error: {}", e),
     }   
 
-    let funding_currency = api.trades.funding_currency(USD.to_owned());
+    let funding_currency = api.trades.funding_currency(USD);
     match funding_currency {
         Ok(trades) => {
             for trade in &trades {
@@ -51,7 +51,7 @@ fn public_endpoints() {
     }        
 
     // BOOK
-    let trading_pairs = api.book.trading_pair(ETHUSD.to_owned(), P0.to_owned());
+    let trading_pairs = api.book.trading_pair(ETHUSD, P0);
     match trading_pairs {
         Ok(books) => {
             for book in &books {
@@ -61,7 +61,7 @@ fn public_endpoints() {
         Err(e) => println!("Error: {}", e),
     }   
 
-    let funding_currency = api.book.funding_currency(USD.to_owned(), P0.to_owned());
+    let funding_currency = api.book.funding_currency(USD, P0);
     match funding_currency {
         Ok(books) => {
             for book in &books {
@@ -72,13 +72,13 @@ fn public_endpoints() {
     }  
 
     // CANDLES
-    let last = api.candles.last(ETHUSD.to_owned(), "1m".to_owned());
+    let last = api.candles.last(ETHUSD, "1m");
     match last {
         Ok(answer) => println!("Candle Last => High: {:?} low: {:?}", answer.high, answer.low),
         Err(e) => println!("Error: {}", e),
     }    
 
-    let history = api.candles.history(ETHUSD.to_owned(), "12h".to_owned());
+    let history = api.candles.history(ETHUSD, "12h");
     match history {
         Ok(candles) => {
             for candle in &candles {
@@ -105,7 +105,7 @@ fn private_endpoints() {
         Err(e) => println!("Error: {}", e),
     }     
 
-    let order_history = api.orders.history(Some(BTCUSD.to_owned()));
+    let order_history = api.orders.history(BTCUSD.to_owned()); // Use None if you don't want a par 
     match order_history {
         Ok(orders) => {
             for order in &orders {
@@ -113,5 +113,5 @@ fn private_endpoints() {
             }    
         },
         Err(e) => println!("Error: {}", e),
-    }       
+    }
 }
