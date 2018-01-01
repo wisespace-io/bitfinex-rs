@@ -42,7 +42,7 @@ pub struct Order {
     
     pub notify: i32,
     pub hidden: i32,
-    pub placed_id: i32                      
+    pub placed_id: Option<i32>                      
 }
 
 #[derive(Clone)]
@@ -60,6 +60,29 @@ impl Orders {
     pub fn active_orders(&self) -> Result<(Vec<Order>)> {
         let endpoint: String = format!("auth/r/orders");
         let data = self.client.post_signed(endpoint, "orders".to_owned())?;
+
+        let orders: Vec<Order> = from_str(data.as_str()).unwrap();
+
+        Ok(orders)
+    }
+
+    pub fn history(&self, symbol: Option<String>) -> Result<(Vec<Order>)> {
+        let value = symbol.unwrap_or("".into());
+
+        let mut endpoint: String = format!("/auth/r/");
+
+        if value.is_empty() {
+            endpoint.push_str("orders/hist");
+            return self.orders(endpoint, "orders/hist".to_owned());
+        } else {
+            let request: String = format!("orders/t{}/hist", value);
+            endpoint.push_str(request.as_str());
+            return self.orders(endpoint, request);
+        }
+    }
+
+    pub fn orders(&self, endpoint: String, request: String) -> Result<(Vec<Order>)> {
+        let data = self.client.post_signed(endpoint, request)?;
 
         let orders: Vec<Order> = from_str(data.as_str()).unwrap();
 

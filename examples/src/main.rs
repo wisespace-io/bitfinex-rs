@@ -103,5 +103,15 @@ fn private_endpoints() {
             }    
         },
         Err(e) => println!("Error: {}", e),
+    }     
+
+    let order_history = api.orders.history(Some(BTCUSD.to_owned()));
+    match order_history {
+        Ok(orders) => {
+            for order in &orders {
+                println!("Order History => Symbol: {:?} amount: {:?} price: {:?}", order.symbol, order.amount, order.price);
+            }    
+        },
+        Err(e) => println!("Error: {}", e),
     }       
 }
