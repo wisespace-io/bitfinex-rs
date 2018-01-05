@@ -3,20 +3,35 @@ use errors::*;
 use serde_json::{from_str};
 
 #[derive(Serialize, Deserialize)]
-pub struct TradingPair { 
-    pub mts: i64,
-    pub amount: f64,   
-    pub price: f64,                   
-    pub rate: f64                  
+pub struct Trade {
+    pub id: i64,
+    pub pair: String,
+    pub execution_timestap: i64,
+    pub order_id: i32,
+    pub execution_amount: f64,
+    pub execution_price: f64,
+    pub order_type: String,
+    pub order_price: f64,
+    pub maker: i32,
+    pub fee: f64,
+    pub fee_currency: String
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct FundingCurrency { 
+pub struct TradingPair {
     pub mts: i64,
-    pub amount: f64,   
-    pub price: f64,                   
+    pub amount: f64,
+    pub price: f64,
+    pub rate: f64
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct FundingCurrency {
+    pub mts: i64,
+    pub amount: f64,
+    pub price: f64,
     pub rate: f64,
-    pub period: i64                  
+    pub period: i64
 }
 
 #[derive(Clone)]
@@ -40,11 +55,11 @@ impl Trades {
         let trades: Vec<FundingCurrency> = from_str(data.as_str()).unwrap();
 
         Ok(trades)
-    }    
+    }
 
     pub fn trading_pair<S>(&self, symbol: S) -> Result<(Vec<TradingPair>)>
         where S: Into<String>
-    {     
+    {
         let endpoint: String = format!("trades/t{}/hist", symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
@@ -52,4 +67,34 @@ impl Trades {
 
         Ok(trades)
     }
+
+    pub fn history<S>(&self, symbol: S) -> Result<(Vec<Trade>)>
+        where S: Into<String>
+    {
+        let mut endpoint: String = format!("auth/r/");
+
+        let request: String = format!("trades/t{}/hist", symbol.into());
+        endpoint.push_str(request.as_str());
+        return self.trades(endpoint, request);
+    }
+
+    pub fn generated_by_order<S>(&self, symbol: S, order_id: S) -> Result<(Vec<Trade>)>
+        where S: Into<String>
+    {
+        let mut endpoint: String = format!("auth/r/");
+
+        let request: String = format!("order/t{}:{}/trades", symbol.into(), order_id.into());
+        endpoint.push_str(request.as_str());
+        return self.trades(endpoint, request);
+    }   
+
+    pub fn trades<S>(&self, endpoint: S, request: S) -> Result<(Vec<Trade>)>
+        where S: Into<String>
+    {
+        let data = self.client.post_signed(endpoint.into(), request.into())?;
+
+        let orders: Vec<Trade> = from_str(data.as_str()).unwrap();
+
+        Ok(orders)
+    }    
 }

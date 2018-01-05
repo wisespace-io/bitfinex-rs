@@ -95,8 +95,7 @@ fn private_endpoints() {
     let api = Bitfinex::new(api_key, secret_key);
   
     // ORDERS
-    let active_orders = api.orders.active_orders();
-    match active_orders {
+    match api.orders.active_orders() {
         Ok(orders) => {
             for order in &orders {
                 println!("Active orders => Symbol: {:?} amount: {:?} price: {:?}", order.symbol, order.amount, order.price);
@@ -105,7 +104,7 @@ fn private_endpoints() {
         Err(e) => println!("Error: {}", e),
     }     
 
-    let order_history = api.orders.history(BTCUSD.to_owned()); // Use None if you don't want a par 
+    let order_history = api.orders.history(BTCUSD.to_owned()); // Use None if you don't want a pair 
     match order_history {
         Ok(orders) => {
             for order in &orders {
@@ -114,4 +113,25 @@ fn private_endpoints() {
         },
         Err(e) => println!("Error: {}", e),
     }
+
+    // WALLET
+    match api.account.get_wallets() {
+        Ok(wallets) => {
+            for wallet in &wallets {
+                println!("Wallet => Currency: {:?} Balance: {:?}", wallet.currency, wallet.balance);
+            }    
+        },
+        Err(e) => println!("Error: {}", e),
+    }
+
+    // TRADES
+    let trades_history = api.trades.history(BTCUSD);
+    match trades_history {
+        Ok(trades) => {
+            for trade in &trades {
+                println!("Trade History => Order ID: {:?} price: {:?}", trade.order_id, trade.order_price);
+            }    
+        },
+        Err(e) => println!("Error: {}", e),
+    }    
 }

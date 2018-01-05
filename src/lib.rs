@@ -19,6 +19,7 @@ mod ticker;
 mod trades;
 mod orders;
 mod candles;
+mod account;
 mod errors;
 
 pub mod api;

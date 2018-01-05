@@ -3,6 +3,7 @@ use ticker::*;
 use trades::*;
 use candles::*;
 use orders::*;
+use account::*;
 
 #[derive(Clone)]
 pub struct Bitfinex {
@@ -10,7 +11,8 @@ pub struct Bitfinex {
     pub ticker: Ticker,
     pub trades: Trades,
     pub candles: Candles,
-    pub orders: Orders
+    pub orders: Orders,
+    pub account: Account
 }
 
 impl Bitfinex {
@@ -20,7 +22,8 @@ impl Bitfinex {
             ticker: Ticker::new(),
             trades: Trades::new(),
             candles: Candles::new(),
-            orders: Orders::new(api_key, secret_key)
+            orders: Orders::new(api_key.clone(), secret_key.clone()),
+            account: Account::new(api_key.clone(), secret_key.clone())
         }
     }
 }

@@ -79,6 +79,7 @@ impl Client {
             StatusCode::Ok => {
                 let mut body = String::new();
                 response.read_to_string(&mut body).unwrap();
+
                 return Ok(body);
             },
             StatusCode::InternalServerError => {

@@ -68,7 +68,7 @@ impl Orders {
     {    
         let value = symbol.into().unwrap_or("".into());
 
-        let mut endpoint: String = format!("/auth/r/");
+        let mut endpoint: String = format!("auth/r/");
 
         if value.is_empty() {
             endpoint.push_str("orders/hist");
