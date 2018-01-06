@@ -71,27 +71,26 @@ impl Trades {
     pub fn history<S>(&self, symbol: S) -> Result<(Vec<Trade>)>
         where S: Into<String>
     {
-        let mut endpoint: String = format!("auth/r/");
+        let payload: String = format!("{}", "{}");
 
         let request: String = format!("trades/t{}/hist", symbol.into());
-        endpoint.push_str(request.as_str());
-        return self.trades(endpoint, request);
+        println!("HISTORY {}", request);
+        return self.trades(request, payload);
     }
 
     pub fn generated_by_order<S>(&self, symbol: S, order_id: S) -> Result<(Vec<Trade>)>
         where S: Into<String>
     {
-        let mut endpoint: String = format!("auth/r/");
+        let payload: String = format!("{}", "{}");
 
         let request: String = format!("order/t{}:{}/trades", symbol.into(), order_id.into());
-        endpoint.push_str(request.as_str());
-        return self.trades(endpoint, request);
+        return self.trades(request, payload);
     }   
 
-    pub fn trades<S>(&self, endpoint: S, request: S) -> Result<(Vec<Trade>)>
+    pub fn trades<S>(&self, request: S, payload: S) -> Result<(Vec<Trade>)>
         where S: Into<String>
     {
-        let data = self.client.post_signed(endpoint.into(), request.into())?;
+        let data = self.client.post_signed(request.into(), payload.into())?;
 
         let orders: Vec<Trade> = from_str(data.as_str()).unwrap();
 

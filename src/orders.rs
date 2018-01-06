@@ -16,17 +16,17 @@ pub struct Order {
     pub previous_order_type: Option<String>,
 
     #[serde(skip_serializing)]
-    pub placeholder_1: Option<String>,
+    _placeholder_1: Option<String>,
     #[serde(skip_serializing)]
-    pub placeholder_2: Option<String>,
+    _placeholder_2: Option<String>,
     
     pub flags: Option<i32>,                   
     pub order_status: Option<String>,
 
     #[serde(skip_serializing)]
-    pub placeholder_3: Option<String>,
+    _placeholder_3: Option<String>,
     #[serde(skip_serializing)]
-    pub placeholder_4: Option<String>,
+    _placeholder_4: Option<String>,
 
     pub price: f64,
     pub price_avg: f64,
@@ -34,11 +34,11 @@ pub struct Order {
     pub price_aux_limit: Option<f64>,
     
     #[serde(skip_serializing)]
-    pub placeholder_5: Option<String>,
+    __placeholder_5: Option<String>,
     #[serde(skip_serializing)]
-    pub placeholder_6: Option<String>,
+    _placeholder_6: Option<String>,
     #[serde(skip_serializing)]
-    pub placeholder_7: Option<String>,    
+    _placeholder_7: Option<String>,    
     
     pub notify: i32,
     pub hidden: i32,
@@ -58,32 +58,29 @@ impl Orders {
     }
 
     pub fn active_orders(&self) -> Result<(Vec<Order>)> {
-        let endpoint: String = format!("auth/r/orders");
+        let payload: String = format!("{}", "{}");
 
-        self.orders(endpoint, "orders".to_owned())
+        self.orders("orders".to_owned(), payload)
     }
 
     pub fn history<T>(&self, symbol: T) -> Result<(Vec<Order>)>
         where T: Into<Option<String>>
     {    
         let value = symbol.into().unwrap_or("".into());
-
-        let mut endpoint: String = format!("auth/r/");
+        let payload: String = format!("{}", "{}");
 
         if value.is_empty() {
-            endpoint.push_str("orders/hist");
-            return self.orders(endpoint, "orders/hist".to_owned());
+            return self.orders("orders/hist".into(), payload);
         } else {
             let request: String = format!("orders/t{}/hist", value);
-            endpoint.push_str(request.as_str());
-            return self.orders(endpoint, request);
+            return self.orders(request, payload);
         }
     }
 
-    pub fn orders<S>(&self, endpoint: S, request: S) -> Result<(Vec<Order>)>
+    pub fn orders<S>(&self, request: S, payload: S) -> Result<(Vec<Order>)>
         where S: Into<String>
     {    
-        let data = self.client.post_signed(endpoint.into(), request.into())?;
+        let data = self.client.post_signed(request.into(), payload.into())?;
 
         let orders: Vec<Order> = from_str(data.as_str()).unwrap();
 

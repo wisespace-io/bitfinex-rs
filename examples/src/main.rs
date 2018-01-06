@@ -124,13 +124,25 @@ fn private_endpoints() {
         Err(e) => println!("Error: {}", e),
     }
 
-    // TRADES
-    let trades_history = api.trades.history(BTCUSD);
-    match trades_history {
-        Ok(trades) => {
-            for trade in &trades {
-                println!("Trade History => Order ID: {:?} price: {:?}", trade.order_id, trade.order_price);
-            }    
+    // MARGIN INFO
+    match api.account.margin_base() {
+        Ok(info) => {
+            println!("Margin Base Info => Profile/Loss: {:?}", info.margin.user_profit_loss);    
+        },
+        Err(e) => println!("Error: {}", e),
+    }
+
+    match api.account.margin_symbol(ETHUSD) {
+        Ok(info) => {
+            println!("Margin Symbol Info => Gross Balance: {:?}", info.margin.gross_balance);    
+        },
+        Err(e) => println!("Error: {}", e),
+    }   
+
+    // FUNDING INFO
+    match api.account.funding_info(USD) {
+        Ok(info) => {
+            println!("Funding Info => Yield Loan: {:?} Yield Lend: {:?}", info.funding.yield_loan, info.funding.yield_lend);    
         },
         Err(e) => println!("Error: {}", e),
     }    

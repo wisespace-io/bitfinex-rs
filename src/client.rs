@@ -35,22 +35,21 @@ impl Client {
         self.handler(response)
     }
 
-    pub fn post_signed(&self, endpoint: String, request: String) -> Result<(String)> {
-        let data: String = format!("{}", "{}"); //TODO: Must build the data
-        let url: String = format!("{}{}", API1_HOST, endpoint);
+    pub fn post_signed(&self, request: String, payload: String) -> Result<(String)> {
+        let url: String = format!("{}auth/r/{}", API1_HOST, request);
 
         let client = reqwest::Client::new();
         let response = client.post(url.as_str())
-            .headers(self.build_headers(request, data.clone()))
-            .body(data)
+            .headers(self.build_headers(request, payload.clone()))
+            .body(payload)
             .send()?;
 
         self.handler(response)            
     } 
 
-    fn build_headers(&self, request: String, data: String) -> Headers {
+    fn build_headers(&self, request: String, payload: String) -> Headers {
         let nonce: String = self.generate_nonce();
-        let signature_path: String = format!("{}{}{}{}", API_SIGNATURE_PATH, request, nonce, data);
+        let signature_path: String = format!("{}{}{}{}", API_SIGNATURE_PATH, request, nonce, payload);
 
         let signed_key = hmac::SigningKey::new(&digest::SHA384, self.secret_key.as_bytes());
         let signature = hmac::sign(&signed_key, signature_path.as_bytes()).as_ref().to_hex().to_string();
@@ -79,7 +78,6 @@ impl Client {
             StatusCode::Ok => {
                 let mut body = String::new();
                 response.read_to_string(&mut body).unwrap();
-
                 return Ok(body);
             },
             StatusCode::InternalServerError => {
