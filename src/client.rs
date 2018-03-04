@@ -1,10 +1,10 @@
-use hex::ToHex;
 use errors::*;
 use reqwest;
 use reqwest::{StatusCode, Response};
 use reqwest::header::{Headers, UserAgent, ContentType};
 use std::io::Read;
 use ring::{digest, hmac};
+use hex::encode as hex_encode;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 static API1_HOST : &'static str = "https://api.bitfinex.com/v2/";
@@ -52,7 +52,7 @@ impl Client {
         let signature_path: String = format!("{}{}{}{}", API_SIGNATURE_PATH, request, nonce, payload);
 
         let signed_key = hmac::SigningKey::new(&digest::SHA384, self.secret_key.as_bytes());
-        let signature = hmac::sign(&signed_key, signature_path.as_bytes()).as_ref().to_hex().to_string();
+        let signature = hex_encode(hmac::sign(&signed_key, signature_path.as_bytes()).as_ref());
 
         let mut custon_headers = Headers::new();  
         custon_headers.set(UserAgent::new("bitfinex-rs"));
