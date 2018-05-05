@@ -5,8 +5,8 @@ extern crate hex;
 extern crate ring;
 extern crate reqwest;
 extern crate serde;
+#[macro_use]
 extern crate serde_json;
-
 extern crate tungstenite;
 extern crate url;
 
@@ -27,3 +27,4 @@ pub mod pairs;
 pub mod currency;
 pub mod precision;
 pub mod websockets;
+pub mod events;

@@ -10,4 +10,4 @@ cargo run --release --bin "public_endpoints"
 
 ## Public Channels
 
-cargo run --release --bin "public_channelss"
+cargo run --release --bin "public_channels"

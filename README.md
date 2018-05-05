@@ -110,7 +110,11 @@ fn main() {
 
 ## PRIVATE ENDPOINTS
 
-Wallets, Orders, Trades, Margin and Funding Info, see [example](https://github.com/wisespace-io/bitfinex-rs/blob/master/examples/src/main.rs)
+Wallets, Orders, Trades, Margin and Funding Info, see [example](https://github.com/wisespace-io/bitfinex-rs/tree/master/examples)
+
+## Public Channels (Websockets)
+
+Ticker [example](https://github.com/wisespace-io/bitfinex-rs/blob/master/examples/src/public_channels.rs)
 
 # Other Exchanges
 
