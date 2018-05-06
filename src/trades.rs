@@ -17,7 +17,7 @@ pub struct Trade {
     pub fee_currency: String
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct TradingPair {
     pub mts: i64,
     pub amount: f64,
@@ -25,7 +25,7 @@ pub struct TradingPair {
     pub rate: f64
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct FundingCurrency {
     pub mts: i64,
     pub amount: f64,

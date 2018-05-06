@@ -84,6 +84,17 @@ impl WebSockets {
         self.sender.send(&msg.to_string()).unwrap();
     }
 
+    pub fn subscribe_trades<S>(&mut self, symbol: S, et: EventType) where S: Into<String> {
+        let local_symbol = match et {
+            EventType::Funding => format!("f{}", symbol.into()),
+            EventType::Trading => format!("t{}", symbol.into()),
+        };
+
+        let msg = json!({"event": "subscribe", "channel": "trades", "symbol": local_symbol });
+
+        self.sender.send(&msg.to_string()).unwrap();
+    }
+
     pub fn event_loop(&mut self) -> Result<()>  {
         loop {
             if let Some(ref mut socket) = self.socket {

@@ -27,8 +27,13 @@ fn main() {
     web_socket.add_event_handler(WebSocketHandler);
     web_socket.connect().unwrap(); // check error
 
+    // TICKER
     web_socket.subscribe_ticker(BTCUSD, EventType::Trading);
     web_socket.subscribe_ticker(USD, EventType::Funding);
+
+    // TRADES
+    web_socket.subscribe_trades(BTCUSD, EventType::Trading);
+    web_socket.subscribe_trades(USD, EventType::Funding);
 
     web_socket.event_loop().unwrap(); // check error
 }
