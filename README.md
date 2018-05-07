@@ -31,7 +31,7 @@ Wallets, Orders, Trades, Margin and Funding Info, see [example](https://github.c
 
 ## PUBLIC CHANNELS (WEBSCOKETS)
 
-Ticker, Trades, see [example](https://github.com/wisespace-io/bitfinex-rs/blob/master/examples/src/public_channels.rs)
+Ticker, Trades, Books, see [example](https://github.com/wisespace-io/bitfinex-rs/blob/master/examples/src/public_channels.rs)
 
 # Other Exchanges
 
