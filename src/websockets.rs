@@ -74,25 +74,42 @@ impl WebSockets {
     }
 
     pub fn subscribe_ticker<S>(&mut self, symbol: S, et: EventType) where S: Into<String> {
-        let local_symbol = match et {
-            EventType::Funding => format!("f{}", symbol.into()),
-            EventType::Trading => format!("t{}", symbol.into()),
-        };
-
+        let local_symbol = self.format_symbol(symbol.into(), et);
         let msg = json!({"event": "subscribe", "channel": "ticker", "symbol": local_symbol });
 
         self.sender.send(&msg.to_string()).unwrap();
     }
 
     pub fn subscribe_trades<S>(&mut self, symbol: S, et: EventType) where S: Into<String> {
-        let local_symbol = match et {
-            EventType::Funding => format!("f{}", symbol.into()),
-            EventType::Trading => format!("t{}", symbol.into()),
-        };
-
+        let local_symbol = self.format_symbol(symbol.into(), et);
         let msg = json!({"event": "subscribe", "channel": "trades", "symbol": local_symbol });
 
         self.sender.send(&msg.to_string()).unwrap();
+    }
+
+    pub fn subscribe_books<S, P, F>(&mut self, symbol: S, et: EventType, prec: P, freq: F, len: u32) 
+        where S: Into<String>, P: Into<String>, F: Into<String> 
+    {
+        let msg = json!(
+            {
+                "event": "subscribe", 
+                "channel": "book", 
+                "symbol": self.format_symbol(symbol.into(), et),
+                "prec": prec.into(),
+                "freq": freq.into(),
+                "len": len
+            });
+
+        self.sender.send(&msg.to_string()).unwrap();
+    }
+
+    fn format_symbol(&mut self, symbol: String, et: EventType) -> String {
+        let local_symbol = match et {
+            EventType::Funding => format!("f{}", symbol),
+            EventType::Trading => format!("t{}", symbol),
+        };
+
+        local_symbol
     }
 
     pub fn event_loop(&mut self) -> Result<()>  {

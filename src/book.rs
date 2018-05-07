@@ -2,14 +2,14 @@ use client::*;
 use errors::*;
 use serde_json::from_str;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct TradingPair {
     pub price: f64,
     pub count: i64,
     pub amount: f64,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct FundingCurrency {
     pub rate: f64,
     pub period: f64,
