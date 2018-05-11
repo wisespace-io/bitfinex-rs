@@ -17,6 +17,8 @@ impl EventHandler for WebSocketHandler {
             println!("Subscribed to Trading Channel: {:?}, Channel ID: {}", channel, chan_id);
         } else if let NotificationEvent::FundingSubsbribed{ event:_, channel, chan_id, .. } = event {
             println!("Subscribed to Funding Channel: {:?}, Channel ID: {}", channel, chan_id);
+        } else if let NotificationEvent::CandlesSubsbribed{ event:_, channel, chan_id, key } = event {
+            println!("Subscribed to Channel: {:?}, Channel ID: {}, Key: {}", channel, chan_id, key);
         }
     }
 
@@ -47,6 +49,9 @@ fn main() {
     // BOOKS
     web_socket.subscribe_books(BTCUSD, EventType::Trading, P0, "F0", 25);
     web_socket.subscribe_books(USD, EventType::Funding, P0, "F0", 25);
+
+    // CANDLES
+    web_socket.subscribe_candles(BTCUSD, "1m");
 
     web_socket.event_loop().unwrap(); // check error
 }

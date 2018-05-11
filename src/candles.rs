@@ -2,7 +2,7 @@ use client::*;
 use errors::*;
 use serde_json::{from_str};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Candle { 
     pub timestamp: i64,   
     pub open: f64,                   

@@ -1,6 +1,6 @@
 [package]
 name = "bitfinex"
-version = "0.1.4"
+version = "0.1.5"
 license = "MIT OR Apache-2.0"
 authors = ["Flavio Oliveira <flavio@wisespace.io>"]
 
@@ -24,7 +24,7 @@ serde = "1.0"
 serde_json = "1.0"
 serde_derive = "1.0"
 error-chain = "0.11"
-ring = "0.13.0-alpha"
+ring = "0.13.0-alpha2"
 reqwest = "0.8"
 url = "1.6"
 log = "0.3"

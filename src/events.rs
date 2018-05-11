@@ -1,4 +1,5 @@
 use ticker::*;
+use candles::Candle;
 use trades::{TradingPair as TradesTradingPair, FundingCurrency as TradesFundingCurrency};
 use book::{TradingPair as BookTradingPair, FundingCurrency as BookFundingCurrency};
 
@@ -13,6 +14,9 @@ pub enum NotificationEvent {
 
     #[serde(rename_all = "camelCase")]
     FundingSubsbribed { event: String, channel: String, chan_id: u16, symbol: String, currency: String },
+
+    #[serde(rename_all = "camelCase")]
+    CandlesSubsbribed { event: String, channel: String, chan_id: u16, key: String },
 }
 
 #[derive(Debug, Deserialize)]
@@ -27,7 +31,9 @@ pub enum DataEvent {
     BookTradingSnapshotEvent (i32, Vec<BookTradingPair>),
     BookTradingUpdateEvent (i32, BookTradingPair),
     BookFundingSnapshotEvent (i32, Vec<BookFundingCurrency>),
-    BookFundingUpdateEvent (i32, BookFundingCurrency),    
+    BookFundingUpdateEvent (i32, BookFundingCurrency),
+    CandlesSnapshotEvent (i32, Vec<Candle>),
+    CandlesUpdateEvent (i32, Candle),
     HeartbeatEvent (i32, String)
 }
 

@@ -87,6 +87,13 @@ impl WebSockets {
         self.sender.send(&msg.to_string()).unwrap();
     }
 
+    pub fn subscribe_candles<S>(&mut self, symbol: S, timeframe: S) where S: Into<String> {
+        let key: String = format!("trade:{}:t{}", timeframe.into(), symbol.into());
+        let msg = json!({"event": "subscribe", "channel": "candles", "key": key });
+
+        self.sender.send(&msg.to_string()).unwrap();
+    }
+
     pub fn subscribe_books<S, P, F>(&mut self, symbol: S, et: EventType, prec: P, freq: F, len: u32) 
         where S: Into<String>, P: Into<String>, F: Into<String> 
     {
