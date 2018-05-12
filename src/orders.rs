@@ -82,7 +82,7 @@ impl Orders {
     {    
         let data = self.client.post_signed(request.into(), payload.into())?;
 
-        let orders: Vec<Order> = from_str(data.as_str()).unwrap();
+        let orders: Vec<Order> = from_str(data.as_str())?;
 
         Ok(orders)
     }

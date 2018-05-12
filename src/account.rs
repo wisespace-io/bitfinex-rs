@@ -80,7 +80,7 @@ impl Account {
         let payload: String = format!("{}", "{}");
         let data = self.client.post_signed("wallets".into(), payload)?;
 
-        let wallets: Vec<Wallet> = from_str(data.as_str()).unwrap();
+        let wallets: Vec<Wallet> = from_str(data.as_str())?;
 
         Ok(wallets)
     }
@@ -91,7 +91,7 @@ impl Account {
 
         let data = self.client.post_signed("info/margin/base".into(), payload)?;
 
-        let margin: MarginBase = from_str(data.as_str()).unwrap();
+        let margin: MarginBase = from_str(data.as_str())?;
 
         Ok(margin)
     }
@@ -104,7 +104,7 @@ impl Account {
 
         let data = self.client.post_signed(request, payload)?;
 
-        let margin: MarginSymbol = from_str(data.as_str()).unwrap();
+        let margin: MarginSymbol = from_str(data.as_str())?;
 
         Ok(margin)
     }    
@@ -117,7 +117,7 @@ impl Account {
 
         let data = self.client.post_signed(request, payload)?;
 
-        let info: FundingInfo = from_str(data.as_str()).unwrap();
+        let info: FundingInfo = from_str(data.as_str())?;
 
         Ok(info)
     }    

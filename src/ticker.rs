@@ -51,7 +51,7 @@ impl Ticker {
         let endpoint: String = format!("ticker/f{}", symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
-        let ticker: FundingCurrency = from_str(data.as_str()).unwrap();
+        let ticker: FundingCurrency = from_str(data.as_str())?;
 
         Ok(ticker)
     }    
@@ -62,7 +62,7 @@ impl Ticker {
         let endpoint: String = format!("ticker/t{}", symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
-        let ticker: TradingPair = from_str(data.as_str()).unwrap();
+        let ticker: TradingPair = from_str(data.as_str())?;
 
         Ok(ticker)
     }

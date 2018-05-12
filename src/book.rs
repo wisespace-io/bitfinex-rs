@@ -33,7 +33,7 @@ impl Book {
         let endpoint: String = format!("book/f{}/{}", symbol.into(), precision.into());
         let data = self.client.get(endpoint, String::new())?;
 
-        let book: Vec<FundingCurrency> = from_str(data.as_str()).unwrap();
+        let book: Vec<FundingCurrency> = from_str(data.as_str())?;
 
         Ok(book)
     }
@@ -44,7 +44,7 @@ impl Book {
         let endpoint: String = format!("book/t{}/{}", symbol.into(), precision.into());
         let data = self.client.get(endpoint, String::new())?;
 
-        let book: Vec<TradingPair> = from_str(data.as_str()).unwrap();
+        let book: Vec<TradingPair> = from_str(data.as_str())?;
 
         Ok(book)
     }

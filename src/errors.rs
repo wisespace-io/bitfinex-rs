@@ -23,6 +23,7 @@ error_chain! {
         UrlParserError(url::ParseError);
         Json(serde_json::Error);
         Tungstenite(tungstenite::Error);
+        TimestampError(std::time::SystemTimeError);
     }
 
 }

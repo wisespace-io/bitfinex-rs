@@ -52,7 +52,7 @@ impl Trades {
         let endpoint: String = format!("trades/f{}/hist", symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
-        let trades: Vec<FundingCurrency> = from_str(data.as_str()).unwrap();
+        let trades: Vec<FundingCurrency> = from_str(data.as_str())?;
 
         Ok(trades)
     }
@@ -63,7 +63,7 @@ impl Trades {
         let endpoint: String = format!("trades/t{}/hist", symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
-        let trades: Vec<TradingPair> = from_str(data.as_str()).unwrap();
+        let trades: Vec<TradingPair> = from_str(data.as_str())?;
 
         Ok(trades)
     }
@@ -92,7 +92,7 @@ impl Trades {
     {
         let data = self.client.post_signed(request.into(), payload.into())?;
 
-        let orders: Vec<Trade> = from_str(data.as_str()).unwrap();
+        let orders: Vec<Trade> = from_str(data.as_str())?;
 
         Ok(orders)
     }    

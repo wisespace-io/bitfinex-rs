@@ -30,7 +30,7 @@ impl Candles {
         let endpoint: String = format!("candles/trade:{}:t{}/last", timeframe.into(), symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
-        let history: Candle = from_str(data.as_str()).unwrap();
+        let history: Candle = from_str(data.as_str())?;
 
         Ok(history)
     }    
@@ -41,7 +41,7 @@ impl Candles {
         let endpoint: String = format!("candles/trade:{}:t{}/hist", timeframe.into(), symbol.into());
         let data = self.client.get(endpoint, String::new())?;
 
-        let history: Vec<Candle> = from_str(data.as_str()).unwrap();
+        let history: Vec<Candle> = from_str(data.as_str())?;
 
         Ok(history)
     }

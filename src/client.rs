@@ -40,15 +40,15 @@ impl Client {
 
         let client = reqwest::Client::new();
         let response = client.post(url.as_str())
-            .headers(self.build_headers(request, payload.clone()))
+            .headers(self.build_headers(request, payload.clone())?)
             .body(payload)
             .send()?;
 
         self.handler(response)            
     } 
 
-    fn build_headers(&self, request: String, payload: String) -> Headers {
-        let nonce: String = self.generate_nonce();
+    fn build_headers(&self, request: String, payload: String) -> Result<Headers> {
+        let nonce: String = self.generate_nonce()?;
         let signature_path: String = format!("{}{}{}{}", API_SIGNATURE_PATH, request, nonce, payload);
 
         let signed_key = hmac::SigningKey::new(&digest::SHA384, self.secret_key.as_bytes());
@@ -61,23 +61,23 @@ impl Client {
         custon_headers.set_raw("bfx-signature", signature.as_str());
         custon_headers.set(ContentType::json());
 
-        custon_headers
+        Ok(custon_headers)
     } 
 
-    fn generate_nonce(&self) -> String {
+    fn generate_nonce(&self) -> Result<String> {
         let start = SystemTime::now();
-        let since_epoch = start.duration_since(UNIX_EPOCH).unwrap();
+        let since_epoch = start.duration_since(UNIX_EPOCH)?;
     
         let timestamp = since_epoch.as_secs() * 1000 + since_epoch.subsec_nanos() as u64 / 1_000_000;
 
-        (timestamp + 1).to_string()      
+        Ok((timestamp + 1).to_string())      
     }
 
     fn handler(&self, mut response: Response) -> Result<(String)> {
         match response.status() {
             StatusCode::Ok => {
                 let mut body = String::new();
-                response.read_to_string(&mut body).unwrap();
+                response.read_to_string(&mut body)?;
                 return Ok(body);
             },
             StatusCode::InternalServerError => {
