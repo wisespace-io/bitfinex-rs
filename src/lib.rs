@@ -20,7 +20,6 @@ mod trades;
 mod orders;
 mod candles;
 mod account;
-mod errors;
 
 pub mod api;
 pub mod pairs;
@@ -28,3 +27,4 @@ pub mod currency;
 pub mod precision;
 pub mod websockets;
 pub mod events;
+pub mod errors;

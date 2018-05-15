@@ -1,6 +1,6 @@
 extern crate bitfinex;
 
-use bitfinex::{ events::*, websockets::* };
+use bitfinex::{ errors::*, events::*, websockets::* };
 use bitfinex::{ pairs::*, currency::*, precision::* };
 
 struct WebSocketHandler;
@@ -30,6 +30,10 @@ impl EventHandler for WebSocketHandler {
         }
         // ... Add for all events you have subscribed (Trades, Books, ...)
     }
+
+    fn on_error(&mut self, message: Error) {
+        println!("{:?}", message);
+    }    
 }
 
 fn main() {

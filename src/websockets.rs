@@ -18,7 +18,8 @@ static WEBSOCKET_URL: &'static str = "wss://api.bitfinex.com/ws/2";
 pub trait EventHandler {
     fn on_connect(&mut self, event: NotificationEvent);
     fn on_subscribed(&mut self, event: NotificationEvent);
-    fn on_data_event(&mut self, event: DataEvent);   
+    fn on_data_event(&mut self, event: DataEvent);
+    fn on_error(&mut self, message: Error); 
 }
 
 pub enum EventType {
@@ -77,21 +78,27 @@ impl WebSockets {
         let local_symbol = self.format_symbol(symbol.into(), et);
         let msg = json!({"event": "subscribe", "channel": "ticker", "symbol": local_symbol });
 
-        self.sender.send(&msg.to_string()).unwrap();
+        if let Err(error_msg) = self.sender.send(&msg.to_string()) {
+            self.error_hander(error_msg);
+        }
     }
 
     pub fn subscribe_trades<S>(&mut self, symbol: S, et: EventType) where S: Into<String> {
         let local_symbol = self.format_symbol(symbol.into(), et);
         let msg = json!({"event": "subscribe", "channel": "trades", "symbol": local_symbol });
 
-        self.sender.send(&msg.to_string()).unwrap();
+        if let Err(error_msg) = self.sender.send(&msg.to_string()) {
+            self.error_hander(error_msg);
+        }
     }
 
     pub fn subscribe_candles<S>(&mut self, symbol: S, timeframe: S) where S: Into<String> {
         let key: String = format!("trade:{}:t{}", timeframe.into(), symbol.into());
         let msg = json!({"event": "subscribe", "channel": "candles", "key": key });
 
-        self.sender.send(&msg.to_string()).unwrap();
+        if let Err(error_msg) = self.sender.send(&msg.to_string()) {
+            self.error_hander(error_msg);
+        } 
     }
 
     pub fn subscribe_books<S, P, F>(&mut self, symbol: S, et: EventType, prec: P, freq: F, len: u32) 
@@ -107,7 +114,15 @@ impl WebSockets {
                 "len": len
             });
 
-        self.sender.send(&msg.to_string()).unwrap();
+        if let Err(error_msg) = self.sender.send(&msg.to_string()) {
+            self.error_hander(error_msg);
+        }
+    }
+
+    fn error_hander(&mut self, error_msg: Error) {
+        if let Some(ref mut h) = self.event_handler {
+            h.on_error(error_msg);
+        }        
     }
 
     fn format_symbol(&mut self, symbol: String, et: EventType) -> String {
