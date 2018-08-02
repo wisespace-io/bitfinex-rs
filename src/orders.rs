@@ -1,6 +1,6 @@
 use client::*;
 use errors::*;
-use serde_json::{from_str};
+use serde_json::from_str;
 
 #[derive(Serialize, Deserialize)]
 pub struct Order { 

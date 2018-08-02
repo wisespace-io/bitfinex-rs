@@ -1,7 +1,7 @@
 use url::Url;
 use errors::*;
 use events::*;
-use serde_json::{from_str};
+use serde_json::from_str;
 
 use tungstenite::connect;
 use tungstenite::Message;
