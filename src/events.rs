@@ -7,16 +7,11 @@ use book::{TradingPair as BookTradingPair, FundingCurrency as BookFundingCurrenc
 #[serde(untagged)]
 #[serde(rename_all = "camelCase")]
 pub enum NotificationEvent {
-    Info { event: String, version: u16, platform: Platform },
-
-    #[serde(rename_all = "camelCase")]
-    TradingSubsbribed { event: String, channel: String, chan_id: u16, symbol: String, pair: String },
-
-    #[serde(rename_all = "camelCase")]
-    FundingSubsbribed { event: String, channel: String, chan_id: u16, symbol: String, currency: String },
-
-    #[serde(rename_all = "camelCase")]
-    CandlesSubsbribed { event: String, channel: String, chan_id: u16, key: String },
+    Info(InfoMessage),
+    TradingSubscribed(TradingSubscriptionMessage),
+    FundingSubscribed(FundingSubscriptionMessage),
+    CandlesSubscribed(CandlesSubscriptionMessage),
+    RawBookSubscribed(RawBookSubscriptionMessage),
 }
 
 #[derive(Debug, Deserialize)]
@@ -39,8 +34,58 @@ pub enum DataEvent {
     HeartbeatEvent (i32, String)
 }
 
+#[serde(rename_all = "camelCase")]
+#[derive(Debug, Deserialize)]
+pub struct InfoMessage {
+    pub event: String,
+    pub version: u16,
+    pub server_id: String,
+    pub platform: Platform,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Platform {
     pub status: u16,
 }
 
+#[serde(rename_all = "camelCase")]
+#[derive(Debug, Deserialize)]
+pub struct TradingSubscriptionMessage {
+    pub event: String,
+    pub channel: String,
+    pub chan_id: u32,
+    pub symbol: String,
+    pub pair: String
+}
+
+#[serde(rename_all = "camelCase")]
+#[derive(Debug, Deserialize)]
+pub struct FundingSubscriptionMessage {
+    pub event: String,
+    pub channel: String,
+    pub chan_id: u32,
+    pub symbol: String,
+    pub currency: String
+}
+
+#[serde(rename_all = "camelCase")]
+#[derive(Debug, Deserialize)]
+pub struct CandlesSubscriptionMessage {
+    pub event: String,
+    pub channel: String,
+    pub chan_id: u32,
+    pub key: String
+}
+
+#[serde(rename_all = "camelCase")]
+#[derive(Debug, Deserialize)]
+pub struct RawBookSubscriptionMessage {
+    pub event: String,
+    pub channel: String,
+    pub chan_id: u32,
+    pub symbol: String,
+    pub prec: String,
+    pub freq: String,
+    pub len: String,
+    pub pair: String
+}

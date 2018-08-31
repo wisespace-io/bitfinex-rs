@@ -30,7 +30,7 @@ pub struct FundingCurrency {
     pub last_price: f64,
     pub volume: f64,
     pub high: f64,
-    pub low: f64                    
+    pub low: f64
 }
 
 #[derive(Clone)]
