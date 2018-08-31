@@ -22,6 +22,14 @@ pub struct Book {
     client: Client,
 }
 
+// Trading: if AMOUNT > 0 then bid else ask; Funding: if AMOUNT < 0 then bid else ask;
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RawBook {
+    pub order_id: i64,
+    pub price: f64,
+    pub amount: f64,
+}
+
 impl Book {
     pub fn new() -> Self {
         Book { client: Client::new(None, None) }

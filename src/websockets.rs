@@ -119,6 +119,22 @@ impl WebSockets {
         }
     }
 
+    pub fn subscribe_raw_books<S>(&mut self, symbol: S, et: EventType)
+        where S: Into<String> 
+    {
+        let msg = json!(
+            {
+                "event": "subscribe", 
+                "channel": "book", 
+                "prec": "R0",
+                "pair": self.format_symbol(symbol.into(), et)
+            });
+
+        if let Err(error_msg) = self.sender.send(&msg.to_string()) {
+            self.error_hander(error_msg);
+        }
+    }
+
     fn error_hander(&mut self, error_msg: Error) {
         if let Some(ref mut h) = self.event_handler {
             h.on_error(error_msg);

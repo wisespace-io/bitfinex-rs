@@ -1,7 +1,7 @@
 use ticker::*;
 use candles::Candle;
 use trades::{TradingPair as TradesTradingPair, FundingCurrency as TradesFundingCurrency};
-use book::{TradingPair as BookTradingPair, FundingCurrency as BookFundingCurrency};
+use book::{TradingPair as BookTradingPair, FundingCurrency as BookFundingCurrency, RawBook};
 
 #[derive(Debug, Deserialize)]
 #[serde(untagged)]
@@ -32,6 +32,8 @@ pub enum DataEvent {
     BookTradingUpdateEvent (i32, BookTradingPair),
     BookFundingSnapshotEvent (i32, Vec<BookFundingCurrency>),
     BookFundingUpdateEvent (i32, BookFundingCurrency),
+    RawBookEvent (i32, RawBook),
+    RawBookUpdateEvent (i32, Vec<RawBook>),
     CandlesSnapshotEvent (i32, Vec<Candle>),
     CandlesUpdateEvent (i32, Candle),
     HeartbeatEvent (i32, String)
