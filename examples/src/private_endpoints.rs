@@ -1,5 +1,6 @@
 extern crate bitfinex;
 
+use std::time::SystemTime;
 use bitfinex::api::*;
 use bitfinex::pairs::*;
 use bitfinex::currency::*;
@@ -61,4 +62,15 @@ fn main() {
         },
         Err(e) => println!("Error: {}", e),
     }    
+
+    // LEDGER
+    let now = SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis();
+    match api.ledger.get_history(USD, now - 3600000, now, 5) {
+        Ok(entries) => {
+            for entry in &entries {
+                println!("Ledger Entry => {}{} => {}: {}", entry.amount, entry.currency, entry.balance, entry.description);
+            }
+        },
+        Err(e) => println!("Error: {}", e),
+    }
 }
