@@ -28,6 +28,7 @@ mod orders;
 mod candles;
 mod account;
 mod ledger;
+mod auth;
 
 pub mod api;
 pub mod pairs;
