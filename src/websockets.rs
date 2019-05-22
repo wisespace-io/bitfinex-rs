@@ -2,6 +2,7 @@ use url::Url;
 use errors::*;
 use events::*;
 use serde_json::from_str;
+use auth;
 
 use tungstenite::connect;
 use tungstenite::Message;
@@ -13,10 +14,13 @@ use std::sync::mpsc::{self, channel};
 
 static INFO: &'static str = "info";
 static SUBSCRIBED: &'static str = "subscribed";
+static AUTH: &'static str = "auth";
 static WEBSOCKET_URL: &'static str = "wss://api.bitfinex.com/ws/2";
+static DEAD_MAN_SWITCH_FLAG: u8 = 4;
 
 pub trait EventHandler {
     fn on_connect(&mut self, event: NotificationEvent);
+    fn on_auth(&mut self, event: NotificationEvent);
     fn on_subscribed(&mut self, event: NotificationEvent);
     fn on_data_event(&mut self, event: DataEvent);
     fn on_error(&mut self, message: Error); 
@@ -72,6 +76,41 @@ impl WebSockets {
 
     pub fn add_event_handler<H>(&mut self, handler: H) where H: EventHandler + 'static {
         self.event_handler = Some(Box::new(handler));
+    }
+
+    /// Authenticates the connection.
+    ///
+    /// The connection will be authenticated until it is disconnected.
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - The API key
+    /// * `api_secret` - The API secret
+    /// * `dms` - Whether the dead man switch is enabled. If true, all account orders will be
+    ///           cancelled when the socket is closed.
+    pub fn auth<S>(&mut self, api_key: S, api_secret: S, dms: bool) -> Result<()>
+    where
+        S: AsRef<str>,
+    {
+        let nonce = auth::generate_nonce()?;
+        let auth_payload = format!("AUTH{}", nonce);
+        let signature =
+            auth::sign_payload(api_secret.as_ref().as_bytes(), auth_payload.as_bytes())?;
+
+        let msg = json!({
+            "event": "auth",
+            "apiKey": api_key.as_ref(),
+            "authSig": signature,
+            "authNonce": nonce,
+            "authPayload": auth_payload,
+            "dms": if dms {Some(DEAD_MAN_SWITCH_FLAG)} else {None},
+        });
+
+        if let Err(error_msg) = self.sender.send(&msg.to_string()) {
+            self.error_hander(error_msg);
+        }
+
+        Ok(())
     }
 
     pub fn subscribe_ticker<S>(&mut self, symbol: S, et: EventType) where S: Into<String> {
@@ -185,6 +224,10 @@ impl WebSockets {
                                 println!("{:?}", text);
                                 let event: NotificationEvent = from_str(&text)?;
                                 h.on_subscribed(event);
+                            } else if text.find(AUTH).is_some() {
+                                println!("{:?}", text);
+                                let event: NotificationEvent = from_str(&text)?;
+                                h.on_auth(event);
                             } else {
                                 println!("{:?}", text);
                                 let event: DataEvent = from_str(&text)?;
