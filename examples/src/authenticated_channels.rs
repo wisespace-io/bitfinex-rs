@@ -34,7 +34,7 @@ fn main() {
     web_socket.add_event_handler(WebSocketHandler);
     web_socket.connect().unwrap(); // check error
 
-    web_socket.auth(api_key, secret_key, false).unwrap();
+    web_socket.auth(api_key, secret_key, false, &[]).unwrap();
 
     // TODO: Handle authenticated channels
 

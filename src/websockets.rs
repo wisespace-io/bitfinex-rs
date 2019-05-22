@@ -88,7 +88,13 @@ impl WebSockets {
     /// * `api_secret` - The API secret
     /// * `dms` - Whether the dead man switch is enabled. If true, all account orders will be
     ///           cancelled when the socket is closed.
-    pub fn auth<S>(&mut self, api_key: S, api_secret: S, dms: bool) -> Result<()>
+    pub fn auth<S>(
+        &mut self,
+        api_key: S,
+        api_secret: S,
+        dms: bool,
+        filters: &[&str],
+    ) -> Result<()>
     where
         S: AsRef<str>,
     {
@@ -104,6 +110,7 @@ impl WebSockets {
             "authNonce": nonce,
             "authPayload": auth_payload,
             "dms": if dms {Some(DEAD_MAN_SWITCH_FLAG)} else {None},
+            "filters": filters,
         });
 
         if let Err(error_msg) = self.sender.send(&msg.to_string()) {
