@@ -12,6 +12,8 @@ impl EventHandler for WebSocketHandler {
         }
     }
 
+    fn on_auth(&mut self, _event: NotificationEvent) {}
+
     fn on_subscribed(&mut self, event: NotificationEvent) {
         if let NotificationEvent::TradingSubscribed(msg) = event {
             println!("Subscribed: {:?}", msg);
