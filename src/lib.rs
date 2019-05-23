@@ -27,6 +27,7 @@ mod trades;
 mod orders;
 mod candles;
 mod account;
+mod ledger;
 
 pub mod api;
 pub mod pairs;
