@@ -15,5 +15,9 @@ path = "src/public_endpoints.rs"
 name = "public_channels"
 path = "src/public_channels.rs"
 
+[[bin]]
+name = "authenticated_channels"
+path = "src/authenticated_channels.rs"
+
 [dependencies]
 bitfinex = { path = "../" }

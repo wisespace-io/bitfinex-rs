@@ -7,6 +7,7 @@ use book::{TradingPair as BookTradingPair, FundingCurrency as BookFundingCurrenc
 #[serde(untagged)]
 #[serde(rename_all = "camelCase")]
 pub enum NotificationEvent {
+    Auth(AuthMessage),
     Info(InfoMessage),
     TradingSubscribed(TradingSubscriptionMessage),
     FundingSubscribed(FundingSubscriptionMessage),
@@ -32,6 +33,24 @@ pub enum DataEvent {
     CandlesSnapshotEvent (i32, Vec<Candle>),
     CandlesUpdateEvent (i32, Candle),
     HeartbeatEvent (i32, String)
+}
+
+#[serde(rename_all = "camelCase")]
+#[derive(Debug, Deserialize)]
+pub struct AuthMessage {
+    pub event: String,
+    pub status: String,
+    pub chan_id: u32,
+    pub code: Option<u32>,
+    pub msg: Option<String>,
+    pub user_id: Option<u32>,
+    pub auth_id: Option<String>,
+}
+
+impl AuthMessage {
+    pub fn is_ok(&self) -> bool {
+        self.status == "OK"
+    }
 }
 
 #[serde(rename_all = "camelCase")]

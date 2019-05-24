@@ -1,11 +1,9 @@
 use errors::*;
+use auth;
 use reqwest;
 use reqwest::{StatusCode, Response};
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue, USER_AGENT, CONTENT_TYPE};
 use std::io::Read;
-use ring::{digest, hmac};
-use hex::encode as hex_encode;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 static API1_HOST : &'static str = "https://api.bitfinex.com/v2/";
 static API_SIGNATURE_PATH : &'static str = "/api/v2/auth/r/";
@@ -48,11 +46,10 @@ impl Client {
     }
 
     fn build_headers(&self, request: String, payload: String) -> Result<HeaderMap> {
-        let nonce: String = self.generate_nonce()?;
+        let nonce: String = auth::generate_nonce()?;
         let signature_path: String = format!("{}{}{}{}", API_SIGNATURE_PATH, request, nonce, payload);
 
-        let signed_key = hmac::SigningKey::new(&digest::SHA384, self.secret_key.as_bytes());
-        let signature = hex_encode(hmac::sign(&signed_key, signature_path.as_bytes()).as_ref());
+        let signature = auth::sign_payload(self.secret_key.as_bytes(), signature_path.as_bytes())?;
 
         let mut headers = HeaderMap::new();
         headers.insert(USER_AGENT, HeaderValue::from_static("bitfinex-rs"));
@@ -62,15 +59,6 @@ impl Client {
         headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
 
         Ok(headers)
-    }
-
-    fn generate_nonce(&self) -> Result<String> {
-        let start = SystemTime::now();
-        let since_epoch = start.duration_since(UNIX_EPOCH)?;
-
-        let timestamp = since_epoch.as_secs() * 1000 + since_epoch.subsec_nanos() as u64 / 1_000_000;
-
-        Ok((timestamp + 1).to_string())
     }
 
     fn handler(&self, mut response: Response) -> Result<(String)> {
