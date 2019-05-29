@@ -20,6 +20,13 @@ pub struct Ledger {
     client: Client,
 }
 
+#[derive(Serialize)]
+struct HistoryParams {
+    pub start: String,
+    pub end: String,
+    pub limit: i32,
+}
+
 impl Ledger {
     pub fn new(api_key: Option<String>, secret_key: Option<String>) -> Self {
         Ledger {
@@ -30,18 +37,22 @@ impl Ledger {
     pub fn get_history<S>(
         &self,
         symbol: S,
-        _start: u128,
-        _end: u128,
-        _limit: i32,
+        start: u128,
+        end: u128,
+        limit: i32,
     ) -> Result<(Vec<Entry>)>
     where
         S: Into<String>,
     {
         let payload: String = format!("{}", "{}");
         let request: String = format!("ledgers/{}/hist", symbol.into());
+        let params = HistoryParams{
+            start: format!("{}", start),
+            end: format!("{}", end),
+            limit: limit,
+        };
 
-        // TODO: Provide query parameters. These must not be signed.
-        let data = self.client.post_signed(request, payload)?;
+        let data = self.client.post_signed_params(request, payload, &params)?;
 
         let entry: Vec<Entry> = from_str(data.as_str())?;
 

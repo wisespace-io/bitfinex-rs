@@ -4,9 +4,11 @@ use reqwest;
 use reqwest::{StatusCode, Response};
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue, USER_AGENT, CONTENT_TYPE};
 use std::io::Read;
+use serde::Serialize;
 
 static API1_HOST : &'static str = "https://api.bitfinex.com/v2/";
 static API_SIGNATURE_PATH : &'static str = "/api/v2/auth/r/";
+static NO_PARAMS: &'static [(); 0] = &[];
 
 #[derive(Clone)]
 pub struct Client {
@@ -34,12 +36,22 @@ impl Client {
     }
 
     pub fn post_signed(&self, request: String, payload: String) -> Result<(String)> {
+        self.post_signed_params(request, payload, NO_PARAMS)
+    }
+
+    pub fn post_signed_params<P: Serialize + ?Sized>(
+        &self,
+        request: String,
+        payload: String,
+        params: &P,
+    ) -> Result<(String)> {
         let url: String = format!("{}auth/r/{}", API1_HOST, request);
 
         let client = reqwest::Client::new();
         let response = client.post(url.as_str())
             .headers(self.build_headers(request, payload.clone())?)
             .body(payload)
+            .query(params)
             .send()?;
 
         self.handler(response)
