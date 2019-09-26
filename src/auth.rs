@@ -1,10 +1,10 @@
 use errors::*;
 use hex::encode;
-use ring::{digest, hmac};
+use ring::hmac;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn sign_payload(secret: &[u8], payload: &[u8]) -> Result<String> {
-    let signed_key = hmac::SigningKey::new(&digest::SHA384, secret);
+    let signed_key = hmac::Key::new(hmac::HMAC_SHA384, secret);
     let signature = encode(hmac::sign(&signed_key, payload).as_ref());
 
     Ok(signature)
