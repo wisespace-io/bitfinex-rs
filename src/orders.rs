@@ -57,13 +57,13 @@ impl Orders {
         }
     }
 
-    pub fn active_orders(&self) -> Result<(Vec<Order>)> {
+    pub fn active_orders(&self) -> Result<Vec<Order>> {
         let payload: String = format!("{}", "{}");
 
         self.orders("orders".to_owned(), payload)
     }
 
-    pub fn history<T>(&self, symbol: T) -> Result<(Vec<Order>)>
+    pub fn history<T>(&self, symbol: T) -> Result<Vec<Order>>
         where T: Into<Option<String>>
     {    
         let value = symbol.into().unwrap_or("".into());
@@ -77,7 +77,7 @@ impl Orders {
         }
     }
 
-    pub fn orders<S>(&self, request: S, payload: S) -> Result<(Vec<Order>)>
+    pub fn orders<S>(&self, request: S, payload: S) -> Result<Vec<Order>>
         where S: Into<String>
     {    
         let data = self.client.post_signed(request.into(), payload.into())?;

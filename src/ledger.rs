@@ -40,7 +40,7 @@ impl Ledger {
         start: u128,
         end: u128,
         limit: i32,
-    ) -> Result<(Vec<Entry>)>
+    ) -> Result<Vec<Entry>>
     where
         S: Into<String>,
     {

@@ -45,7 +45,7 @@ impl Ticker {
         }
     }
 
-    pub fn funding_currency<S>(&self, symbol: S) -> Result<(FundingCurrency)>
+    pub fn funding_currency<S>(&self, symbol: S) -> Result<FundingCurrency>
         where S: Into<String>
     {     
         let endpoint: String = format!("ticker/f{}", symbol.into());
@@ -56,7 +56,7 @@ impl Ticker {
         Ok(ticker)
     }    
 
-    pub fn trading_pair<S>(&self, symbol: S) -> Result<(TradingPair)>
+    pub fn trading_pair<S>(&self, symbol: S) -> Result<TradingPair>
         where S: Into<String>
     {     
         let endpoint: String = format!("ticker/t{}", symbol.into());

@@ -46,7 +46,7 @@ impl Trades {
         }
     }
 
-    pub fn funding_currency<S>(&self, symbol: S) -> Result<(Vec<FundingCurrency>)>
+    pub fn funding_currency<S>(&self, symbol: S) -> Result<Vec<FundingCurrency>>
         where S: Into<String>
     {     
         let endpoint: String = format!("trades/f{}/hist", symbol.into());
@@ -57,7 +57,7 @@ impl Trades {
         Ok(trades)
     }
 
-    pub fn trading_pair<S>(&self, symbol: S) -> Result<(Vec<TradingPair>)>
+    pub fn trading_pair<S>(&self, symbol: S) -> Result<Vec<TradingPair>>
         where S: Into<String>
     {
         let endpoint: String = format!("trades/t{}/hist", symbol.into());
@@ -68,7 +68,7 @@ impl Trades {
         Ok(trades)
     }
 
-    pub fn history<S>(&self, symbol: S) -> Result<(Vec<Trade>)>
+    pub fn history<S>(&self, symbol: S) -> Result<Vec<Trade>>
         where S: Into<String>
     {
         let payload: String = format!("{}", "{}");
@@ -78,7 +78,7 @@ impl Trades {
         return self.trades(request, payload);
     }
 
-    pub fn generated_by_order<S>(&self, symbol: S, order_id: S) -> Result<(Vec<Trade>)>
+    pub fn generated_by_order<S>(&self, symbol: S, order_id: S) -> Result<Vec<Trade>>
         where S: Into<String>
     {
         let payload: String = format!("{}", "{}");
@@ -87,7 +87,7 @@ impl Trades {
         return self.trades(request, payload);
     }   
 
-    pub fn trades<S>(&self, request: S, payload: S) -> Result<(Vec<Trade>)>
+    pub fn trades<S>(&self, request: S, payload: S) -> Result<Vec<Trade>>
         where S: Into<String>
     {
         let data = self.client.post_signed(request.into(), payload.into())?;

@@ -35,7 +35,7 @@ impl Book {
         Book { client: Client::new(None, None) }
     }
 
-    pub fn funding_currency<S>(&self, symbol: S, precision: S) -> Result<(Vec<FundingCurrency>)>
+    pub fn funding_currency<S>(&self, symbol: S, precision: S) -> Result<Vec<FundingCurrency>>
         where S: Into<String>
     {
         let endpoint: String = format!("book/f{}/{}", symbol.into(), precision.into());
@@ -46,7 +46,7 @@ impl Book {
         Ok(book)
     }
 
-    pub fn trading_pair<S>(&self, symbol: S, precision: S) -> Result<(Vec<TradingPair>)>
+    pub fn trading_pair<S>(&self, symbol: S, precision: S) -> Result<Vec<TradingPair>>
         where S: Into<String>
     {    
         let endpoint: String = format!("book/t{}/{}", symbol.into(), precision.into());

@@ -41,7 +41,7 @@ pub struct WebSockets {
     socket: Option<(WebSocket<AutoStream>, Response)>,
     sender: Sender,
     rx: mpsc::Receiver<WsMessage>,
-    event_handler: Option<Box<EventHandler>>, 
+    event_handler: Option<Box< dyn EventHandler>>, 
 }
 
 impl WebSockets {
@@ -224,19 +224,15 @@ impl WebSockets {
                     Message::Text(text) => {
                         if let Some(ref mut h) = self.event_handler {
                             if text.find(INFO) != None {
-                                println!("{:?}", text);
                                 let event: NotificationEvent = from_str(&text)?;
                                 h.on_connect(event);
                             } else if text.find(SUBSCRIBED) != None {
-                                println!("{:?}", text);
                                 let event: NotificationEvent = from_str(&text)?;
                                 h.on_subscribed(event);
                             } else if text.find(AUTH).is_some() {
-                                println!("{:?}", text);
                                 let event: NotificationEvent = from_str(&text)?;
                                 h.on_auth(event);
                             } else {
-                                println!("{:?}", text);
                                 let event: DataEvent = from_str(&text)?;
                                 if let DataEvent::HeartbeatEvent(_a,_b) = event {
                                     continue;
@@ -249,6 +245,9 @@ impl WebSockets {
                     Message::Binary(_) => {}
                     Message::Ping(_) |
                     Message::Pong(_) => {}
+                    Message::Close(e) => {
+                        bail!(format!("Disconnected {:?}", e));
+                    }
                 }
             }
         }

@@ -24,7 +24,7 @@ impl Client {
         }
     }
 
-    pub fn get(&self, endpoint: String, request: String) -> Result<(String)> {
+    pub fn get(&self, endpoint: String, request: String) -> Result<String> {
         let mut url: String = format!("{}{}", API1_HOST, endpoint);
         if !request.is_empty() {
             url.push_str(format!("?{}", request).as_str());
@@ -35,7 +35,7 @@ impl Client {
         self.handler(response)
     }
 
-    pub fn post_signed(&self, request: String, payload: String) -> Result<(String)> {
+    pub fn post_signed(&self, request: String, payload: String) -> Result<String> {
         self.post_signed_params(request, payload, NO_PARAMS)
     }
 
@@ -44,7 +44,7 @@ impl Client {
         request: String,
         payload: String,
         params: &P,
-    ) -> Result<(String)> {
+    ) -> Result<String> {
         let url: String = format!("{}auth/r/{}", API1_HOST, request);
 
         let client = reqwest::Client::new();
@@ -73,7 +73,7 @@ impl Client {
         Ok(headers)
     }
 
-    fn handler(&self, mut response: Response) -> Result<(String)> {
+    fn handler(&self, mut response: Response) -> Result<String> {
         match response.status() {
             StatusCode::OK => {
                 let mut body = String::new();

@@ -24,7 +24,7 @@ impl Candles {
         }
     }
 
-    pub fn last<S>(&self, symbol: S, timeframe: S) -> Result<(Candle)>
+    pub fn last<S>(&self, symbol: S, timeframe: S) -> Result<Candle>
         where S: Into<String>
     {    
         let endpoint: String = format!("candles/trade:{}:t{}/last", timeframe.into(), symbol.into());
@@ -35,7 +35,7 @@ impl Candles {
         Ok(history)
     }    
 
-    pub fn history<S>(&self, symbol: S, timeframe: S) -> Result<(Vec<Candle>)>
+    pub fn history<S>(&self, symbol: S, timeframe: S) -> Result<Vec<Candle>>
         where S: Into<String>
     {    
         let endpoint: String = format!("candles/trade:{}:t{}/hist", timeframe.into(), symbol.into());

@@ -76,7 +76,7 @@ impl Account {
         }
     }
 
-    pub fn get_wallets(&self) -> Result<(Vec<Wallet>)> {
+    pub fn get_wallets(&self) -> Result<Vec<Wallet>> {
         let payload: String = format!("{}", "{}");
         let data = self.client.post_signed("wallets".into(), payload)?;
 
@@ -85,7 +85,7 @@ impl Account {
         Ok(wallets)
     }
 
-    pub fn margin_base(&self) -> Result<(MarginBase)>
+    pub fn margin_base(&self) -> Result<MarginBase>
     { 
         let payload: String = format!("{}", "{}");
 
@@ -96,7 +96,7 @@ impl Account {
         Ok(margin)
     }
 
-    pub fn margin_symbol<S>(&self, key: S) -> Result<(MarginSymbol)> 
+    pub fn margin_symbol<S>(&self, key: S) -> Result<MarginSymbol> 
         where S: Into<String>
     { 
         let payload: String = format!("{}", "{}");
@@ -109,7 +109,7 @@ impl Account {
         Ok(margin)
     }    
 
-    pub fn funding_info<S>(&self, key: S) -> Result<(FundingInfo)> 
+    pub fn funding_info<S>(&self, key: S) -> Result<FundingInfo> 
         where S: Into<String>
     { 
         let payload: String = format!("{}", "{}");
