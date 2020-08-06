@@ -25,11 +25,11 @@ mod client;
 mod ticker;
 mod trades;
 mod orders;
-mod candles;
 mod account;
 mod ledger;
 mod auth;
 
+pub mod candles;
 pub mod api;
 pub mod pairs;
 pub mod currency;
