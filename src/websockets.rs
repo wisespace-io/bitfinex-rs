@@ -11,6 +11,7 @@ use tungstenite::client::AutoStream;
 use tungstenite::handshake::client::Response;
 
 use std::sync::mpsc::{self, channel};
+use std::sync::atomic::{AtomicBool, Ordering};
 
 static INFO: &'static str = "info";
 static SUBSCRIBED: &'static str = "subscribed";
@@ -196,8 +197,8 @@ impl WebSockets {
         local_symbol
     }
 
-    pub fn event_loop(&mut self) -> Result<()>  {
-        loop {
+    pub fn event_loop(&mut self, running: &AtomicBool) -> Result<()>  {
+        while running.load(Ordering::Relaxed) {
             if let Some(ref mut socket) = self.socket {
                 loop {
                     match self.rx.try_recv() {
@@ -251,6 +252,7 @@ impl WebSockets {
                 }
             }
         }
+        Ok(())
     } 
 }
 
