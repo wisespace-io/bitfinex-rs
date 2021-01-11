@@ -70,7 +70,7 @@ fn main() {
         Err(e) => println!("Error: {}", e),
     }    
 
-    let history = api.candles.history(ETHUSD, "12h");
+    let history = api.candles.history(ETHUSD, "12h", &CandleHistoryParams::new());
     match history {
         Ok(candles) => {
             for candle in &candles {
