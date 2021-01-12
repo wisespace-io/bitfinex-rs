@@ -8,6 +8,7 @@ use serde::Serialize;
 
 static API1_HOST : &'static str = "https://api.bitfinex.com/v2/";
 static API_SIGNATURE_PATH : &'static str = "/api/v2/auth/r/";
+static API_SIGNATURE_PATH_ORDER : &'static str = "/api/v2/auth/w/";
 static NO_PARAMS: &'static [(); 0] = &[];
 
 #[derive(Clone)]
@@ -36,7 +37,11 @@ impl Client {
     }
 
     pub fn post_signed(&self, request: String, payload: String) -> Result<String> {
-        self.post_signed_params(request, payload, NO_PARAMS)
+        self.post_signed_params(request, payload, NO_PARAMS, false)
+    }
+
+    pub fn post_signed_order(&self, request: String, payload: String) -> Result<String> {
+        self.post_signed_params(request, payload, NO_PARAMS, true)
     }
 
     pub fn post_signed_params<P: Serialize + ?Sized>(
@@ -44,12 +49,20 @@ impl Client {
         request: String,
         payload: String,
         params: &P,
+        is_order_request: bool
     ) -> Result<String> {
-        let url: String = format!("{}auth/r/{}", API1_HOST, request);
 
+        let url = match is_order_request {
+            true => format!("{}auth/w/{}", API1_HOST, request),
+            _ => format!("{}auth/r/{}", API1_HOST, request)
+        };
+
+        let api_signature_path = if is_order_request { API_SIGNATURE_PATH_ORDER } else { API_SIGNATURE_PATH };
+
+        println!("{} {} {}", url, api_signature_path, payload);
         let client = reqwest::Client::new();
         let response = client.post(url.as_str())
-            .headers(self.build_headers(request, payload.clone())?)
+            .headers(self.build_headers(request, payload.clone(), api_signature_path.to_string())?)
             .body(payload)
             .query(params)
             .send()?;
@@ -57,9 +70,9 @@ impl Client {
         self.handler(response)
     }
 
-    fn build_headers(&self, request: String, payload: String) -> Result<HeaderMap> {
+    fn build_headers(&self, request: String, payload: String, api_signature_path: String) -> Result<HeaderMap> {
         let nonce: String = auth::generate_nonce()?;
-        let signature_path: String = format!("{}{}{}{}", API_SIGNATURE_PATH, request, nonce, payload);
+        let signature_path: String = format!("{}{}{}{}", api_signature_path, request, nonce, payload);
 
         let signature = auth::sign_payload(self.secret_key.as_bytes(), signature_path.as_bytes())?;
 
@@ -74,10 +87,12 @@ impl Client {
     }
 
     fn handler(&self, mut response: Response) -> Result<String> {
+        let mut body = String::new();
+        response.read_to_string(&mut body)?;
+        println!("{:?}", body);
+
         match response.status() {
             StatusCode::OK => {
-                let mut body = String::new();
-                response.read_to_string(&mut body)?;
                 return Ok(body);
             },
             StatusCode::INTERNAL_SERVER_ERROR => {

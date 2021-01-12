@@ -21,14 +21,15 @@ extern crate url;
 extern crate serde_derive;
 
 mod book;
-mod client;
 mod ticker;
 mod trades;
 mod orders;
 mod account;
 mod ledger;
 mod auth;
+mod client;
 
+pub mod model;
 pub mod candles;
 pub mod api;
 pub mod pairs;
