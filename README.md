@@ -29,7 +29,7 @@ Ticker, Trades, Book, Candles, see [example](https://github.com/wisespace-io/bit
 
 Wallets, Orders, Trades, Margin and Funding Info, see [example](https://github.com/wisespace-io/bitfinex-rs/blob/master/examples/src/private_endpoints.rs)
 
-## PUBLIC CHANNELS (WEBSCOKETS)
+## PUBLIC CHANNELS (WEBSOCKETS)
 
 Ticker, Trades, Book, Raw Book, Candles, see [example](https://github.com/wisespace-io/bitfinex-rs/blob/master/examples/src/public_channels.rs)
 
