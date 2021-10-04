@@ -6,7 +6,7 @@ use serde_json::from_str;
 pub struct Trade {
     pub id: i64,
     pub pair: String,
-    pub execution_timestap: i64,
+    pub execution_timestamp: i64,
     pub order_id: i32,
     pub execution_amount: f64,
     pub execution_price: f64,
@@ -19,10 +19,10 @@ pub struct Trade {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TradingPair {
+    pub id: i64,
     pub mts: i64,
     pub amount: f64,
-    pub price: f64,
-    pub rate: f64
+    pub price: f64
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -26,9 +26,11 @@ impl EventHandler for WebSocketHandler {
 
     fn on_data_event(&mut self, event: DataEvent) {
         if let DataEvent::TickerTradingEvent(channel, trading) = event {
-            println!("Ticker Trading ({})- Bid {:?}, Ask: {}", channel, trading.bid, trading.ask);
+            println!("Ticker Trading ({}) - Bid {:?}, Ask: {}", channel, trading.bid, trading.ask);
         } else if let DataEvent::RawBookEvent(channel, raw_book) = event {
             println!("Raw book ({}) - Price {:?}, Amount: {}", channel, raw_book.price, raw_book.amount);
+        } else if let DataEvent::TradesTradingUpdateEvent(channel, pair, trading) = event {
+            println!("Trade update ({}) - Id: {}, Time: {}, Price: {}, Amount: {}", channel, trading.id, trading.mts, trading.price, trading.amount);
         }
         // ... Add for all events you have subscribed (Trades, Books, ...)
     }
