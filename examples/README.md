@@ -1,6 +1,6 @@
 # Usage
 
-## Private Endpoins
+## Private Endpoints
 
 cargo run --release --bin "private_endpoints"
 
