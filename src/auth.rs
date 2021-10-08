@@ -14,7 +14,6 @@ pub fn generate_nonce() -> Result<String> {
     let start = SystemTime::now();
     let since_epoch = start.duration_since(UNIX_EPOCH)?;
 
-    let timestamp = since_epoch.as_secs() * 1000 + since_epoch.subsec_nanos() as u64 / 1_000_000;
-
-    Ok((timestamp + 1).to_string())
+    let timestamp = since_epoch.as_millis() * 1000 as u128;
+    Ok(timestamp.to_string())
 }

@@ -46,13 +46,13 @@ impl Ledger {
     {
         let payload: String = format!("{}", "{}");
         let request: String = format!("ledgers/{}/hist", symbol.into());
-        let params = HistoryParams{
+        let params = HistoryParams {
             start: format!("{}", start),
             end: format!("{}", end),
             limit: limit,
         };
 
-        let data = self.client.post_signed_params(request, payload, &params)?;
+        let data = self.client.post_signed_params(request, payload, &params, false)?;
 
         let entry: Vec<Entry> = from_str(data.as_str())?;
 
