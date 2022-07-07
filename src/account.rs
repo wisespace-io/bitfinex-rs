@@ -9,6 +9,19 @@ pub struct Wallet {
     pub balance: f64,
     pub unsettled_interest: f64,
     pub balance_available: Option<f64>,
+    pub last_change: Option<String>,
+    pub trade_details: Option<TradeDetail>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct TradeDetail {
+    pub reason: String,
+    pub order_id: i64,
+    pub order_id_oppo: i64,
+    pub trade_price: String,
+    pub trade_amount: f64,
+    pub order_cid: i64,
+    pub order_gid: i64,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -79,7 +92,7 @@ impl Account {
     pub fn get_wallets(&self) -> Result<Vec<Wallet>> {
         let payload: String = format!("{}", "{}");
         let data = self.client.post_signed("wallets".into(), payload)?;
-        println!("{}", data.as_str());
+
         let wallets: Vec<Wallet> = from_str(data.as_str())?;
 
         Ok(wallets)
