@@ -66,11 +66,11 @@ pub struct Symbol {
 pub struct FundingInfo {
     key: String,
     symbol: String,
-    pub funding: Funding,
+    pub funding: FundingYield,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Funding {
+pub struct FundingYield {
     pub yield_loan: f64,
     pub yield_lend: f64,
     pub duration_loan: f64,
@@ -91,7 +91,7 @@ impl Account {
 
     pub fn get_wallets(&self) -> Result<Vec<Wallet>> {
         let payload: String = format!("{}", "{}");
-        let data = self.client.post_signed("wallets".into(), payload)?;
+        let data = self.client.post_signed("r/wallets".into(), payload)?;
 
         let wallets: Vec<Wallet> = from_str(data.as_str())?;
 
@@ -103,7 +103,7 @@ impl Account {
 
         let data = self
             .client
-            .post_signed("info/margin/base".into(), payload)?;
+            .post_signed("r/info/margin/base".into(), payload)?;
 
         let margin: MarginBase = from_str(data.as_str())?;
 
@@ -115,7 +115,7 @@ impl Account {
         S: Into<String>,
     {
         let payload: String = format!("{}", "{}");
-        let request: String = format!("info/margin/t{}", key.into());
+        let request: String = format!("r/info/margin/t{}", key.into());
 
         let data = self.client.post_signed(request, payload)?;
 
@@ -129,7 +129,7 @@ impl Account {
         S: Into<String>,
     {
         let payload: String = format!("{}", "{}");
-        let request: String = format!("info/funding/f{}", key.into());
+        let request: String = format!("r/info/funding/f{}", key.into());
 
         let data = self.client.post_signed(request, payload)?;
 
